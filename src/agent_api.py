@@ -8,7 +8,14 @@ by any agent framework (Hermes, LangChain, CrewAI, custom, etc.).
 Usage:
     from embodied_world.agent_api import EmbodiedAgent
 
+    # Default world (NC coastal)
     agent = EmbodiedAgent()
+
+    # Custom world from YAML
+    agent = EmbodiedAgent(world_config="my_world.yaml")
+
+    # Custom world from dict
+    agent = EmbodiedAgent(world_config={"name": "My World", "geography": {...}})
 
     # Get a rich description of what the agent perceives
     world_text = agent.perceive()
@@ -28,7 +35,7 @@ Usage:
 import json
 import time
 from pathlib import Path
-from typing import Optional
+from typing import Optional, Union
 
 # Handle both installed package and standalone usage
 try:
@@ -44,6 +51,7 @@ try:
     from .events import get_recent_events
     from .rituals import get_upcoming_rituals
     from .persistence import save_snapshot, commit_snapshot
+    from .world_template import WorldConfig, load_config, DEFAULT_CONFIG
 except ImportError:
     from world_state import get_db, init_world, seed_world, DB_PATH
     from agent import Agent
@@ -57,6 +65,7 @@ except ImportError:
     from events import get_recent_events
     from rituals import get_upcoming_rituals
     from persistence import save_snapshot, commit_snapshot
+    from world_template import WorldConfig, load_config, DEFAULT_CONFIG
 
 
 class EmbodiedAgent:
@@ -67,14 +76,36 @@ class EmbodiedAgent:
     for perception, action, and state inspection.
     """
 
-    def __init__(self, db_path: Optional[Path] = None):
+    def __init__(self, db_path: Optional[Path] = None, world_config: Optional[Union[str, dict, WorldConfig]] = None):
         """
         Initialize or load the world.
         
         Args:
             db_path: Path to SQLite database. If None, uses default.
                      If the database doesn't exist, creates and seeds a new world.
+            world_config: World configuration. Can be:
+                         - None: use default NC coastal world
+                         - str: path to a YAML config file
+                         - dict: configuration dict
+                         - WorldConfig: a WorldConfig object
         """
+        # Resolve world config
+        if world_config is None:
+            self._config = DEFAULT_CONFIG
+        elif isinstance(world_config, str):
+            self._config = load_config(world_config)
+        elif isinstance(world_config, dict):
+            self._config = WorldConfig.from_dict(world_config)
+        elif isinstance(world_config, WorldConfig):
+            self._config = world_config
+        else:
+            raise ValueError(f"Invalid world_config type: {type(world_config)}")
+        
+        # Set seed if specified
+        if self._config.seed is not None:
+            import random
+            random.seed(self._config.seed)
+        
         if db_path:
             import os
             os.environ["EMBODIED_WORLD_DB"] = str(db_path)
@@ -82,6 +113,11 @@ class EmbodiedAgent:
         self._agent = Agent(db_path) if db_path else Agent()
         self._db = self._agent.db
         self._world = self._agent.world
+    
+    @property
+    def config(self) -> WorldConfig:
+        """Get the world configuration."""
+        return self._config
 
     # ── PERCEPTION ──
 

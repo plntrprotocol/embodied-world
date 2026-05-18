@@ -1,0 +1,184 @@
+# Embodied Creative World — World Configuration
+# Copy this file and modify it to create your own world.
+# Then load it with: config = load_config("my_world.yaml")
+
+name: "My Custom World"
+version: "1.0.0"
+
+geography:
+  region_name: "The Valley"
+  region_description: "A small mountain valley in the Pacific Northwest."
+  climate: "coastal_north"  # coastal_south, coastal_north, mountain, desert, plains, mediterranean
+  water_body_type: "river"  # sound, ocean, lake, river, bay, sea
+  water_body_name: "The River"
+  water_description: "cold, clear water running fast over smooth stones"
+  elevation: "foothills"  # sea_level, low_rise, foothills, mountain
+  features:
+    - old_growth_forest
+    - hot_springs
+    - mining_ruins
+    - terraced_farms
+
+culture:
+  male_first_names:
+    - James
+    - John
+    - William
+    - Thomas
+    - Robert
+  female_first_names:
+    - Mary
+    - Elizabeth
+    - Sarah
+    - Margaret
+    - Anne
+  surnames:
+    - Blackwood
+    - Stone
+    - Rivers
+    - Frost
+    - Hale
+  speech_style: "northern_us"  # southern_us, northern_us, british, irish, french, generic
+  occupations:
+    fisherman:
+      count: 10
+      locations:
+        - harbor
+        - dock
+    farmer:
+      count: 12
+      locations:
+        - farm_edge
+        - farmhouse
+    miner:
+      count: 15
+      locations:
+        - mine_entrance
+        - mine_interior
+    lumberjack:
+      count: 8
+      locations:
+        - forest_edge
+        - forest_deep
+  greeting_style: "casual"  # casual_southern, formal, reserved, warm, casual
+  local_expressions:
+    - "Sure thing"
+    - "You bet"
+    - "Right then"
+
+ecology:
+  plants:
+    - name: "douglas_fir"
+      type: "tree"
+      season: "all"
+    - name: "salmonberry"
+      type: "shrub"
+      season: "spring"
+    - name: "huckleberry"
+      type: "shrub"
+      season: "summer"
+    - name: "potatoes"
+      type: "crop"
+      season: "summer"
+    - name: "wheat"
+      type: "crop"
+      season: "summer"
+  animals:
+    - name: "black_bear"
+      habitat: "forest"
+      count_range: [1, 4]
+    - name: "salmon"
+      habitat: "river"
+      count_range: [50, 200]
+    - name: "bald_eagle"
+      habitat: "forest_edge"
+      count_range: [1, 3]
+    - name: "elk"
+      habitat: "forest_clearing"
+      count_range: [3, 12]
+  fish:
+    - name: "chinook_salmon"
+      season: "autumn"
+      abundance_range: [0.4, 0.9]
+    - name: "steelhead"
+      season: "spring"
+      abundance_range: [0.3, 0.7]
+
+climate:
+  season_temps:
+    spring:
+      base: 8
+      range: [-5, 10]
+    summer:
+      base: 18
+      range: [5, 15]
+    autumn:
+      base: 10
+      range: [-3, 8]
+    winter:
+      base: -2
+      range: [-15, 5]
+  season_weather:
+    spring:
+      clear: 0.2
+      cloudy: 0.3
+      foggy: 0.15
+      rain: 0.3
+      storm: 0.05
+    summer:
+      clear: 0.5
+      cloudy: 0.2
+      foggy: 0.05
+      rain: 0.15
+      storm: 0.1
+    autumn:
+      clear: 0.15
+      cloudy: 0.25
+      foggy: 0.15
+      rain: 0.35
+      storm: 0.1
+    winter:
+      clear: 0.1
+      cloudy: 0.2
+      foggy: 0.1
+      rain: 0.15
+      storm: 0.45
+
+agent:
+  name: "Wanderer"
+  backstory: "A former soldier seeking solitude in the mountains."
+  occupation: "ranger"
+  start_location: "cabin_bedroom"
+  home_location: "cabin"
+
+rituals:
+  - key: "spring_fair"
+    season: "spring"
+    day: 15
+    title: "The Spring Fair"
+    locations:
+      - town_square
+      - market_stall
+  - key: "midsummer_bonfire"
+    season: "summer"
+    day: 15
+    title: "The Midsummer Bonfire"
+    locations:
+      - beach
+  - key: "harvest_feast"
+    season: "autumn"
+    day: 15
+    title: "The Harvest Feast"
+    locations:
+      - town_square
+      - farmhouse
+  - key: "winter_solstice"
+    season: "winter"
+    day: 21
+    title: "The Winter Solstice"
+    locations:
+      - chapel
+      - tavern
+
+# Random seed for reproducibility (remove or set to null for random)
+seed: null

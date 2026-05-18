@@ -1,5 +1,8 @@
 # Core (no external dependencies)
 # Python 3.11+ standard library only
 
+# Required for YAML world config loading
+pyyaml>=6.0
+
 # Optional — for live web WebSocket updates
 # websockets>=12.0

@@ -6,6 +6,124 @@ A persistent, living world where an AI agent exists as an embodied being — not
 
 A simulation engine for embodied AI agents. The world has its own life — NPCs, ecology, weather, social dynamics, seasons — so every day brings genuine novelty. The agent reads the world state, forms intentions, acts, and the world responds.
 
+**Key feature: fully configurable.** The default world is set on the NC coast, but every aspect — geography, culture, ecology, climate, NPCs, the agent themselves — can be configured via a simple YAML file or Python dict. Same engine, any world.
+
+## Quick Start
+
+```bash
+# Clone
+git clone https://github.com/plntrprotocol/embodied-world.git
+cd embodied-world
+
+# Install dependencies
+pip install -r requirements.txt
+
+# Run with default world (NC coastal)
+python -m src.main
+
+# Run with custom world
+python -m src.main --world my_world.yaml
+
+# Or run web visual layer
+python -m src.web_server
+```
+
+## Agent Harness Integration
+
+```python
+from src.agent_api import EmbodiedAgent
+
+# Default world (NC coastal)
+agent = EmbodiedAgent()
+
+# Custom world from YAML
+agent = EmbodiedAgent(world_config="my_world.yaml")
+
+# Custom world from dict
+agent = EmbodiedAgent(world_config={
+    "name": "My World",
+    "geography": {
+        "region_name": "The Highlands",
+        "climate": "mountain",
+        "water_body_type": "lake",
+    },
+    "culture": {
+        "speech_style": "british",
+        "greeting_style": "formal",
+    },
+})
+
+# Perceive
+description = agent.perceive()
+
+# Act
+result = agent.act("move", "east")
+result = agent.act("talk", "Marty")
+result = agent.act("create", "music sea shanty")
+
+# Structured state for LLM context
+state = agent.get_world_state()
+
+# Save
+agent.save()
+```
+
+## World Configuration
+
+Every aspect of the world is configurable. Copy `world_config_example.yaml` and modify:
+
+```yaml
+name: "My Custom World"
+
+geography:
+  region_name: "The Highlands"
+  climate: "mountain"           # coastal_south, coastal_north, mountain, desert, plains, mediterranean
+  water_body_type: "lake"       # sound, ocean, lake, river, bay, sea
+  water_body_name: "Loch Ness"
+  elevation: "foothills"        # sea_level, low_rise, foothills, mountain
+
+culture:
+  speech_style: "british"       # southern_us, northern_us, british, irish, french, generic
+  greeting_style: "formal"      # casual_southern, formal, reserved, warm, casual
+  male_first_names: [James, William, ...]
+  female_first_names: [Mary, Elizabeth, ...]
+  surnames: [Blackwood, Stone, ...]
+
+ecology:
+  plants:
+    - name: "heather"
+      type: "shrub"
+      season: "summer"
+  animals:
+    - name: "red_deer"
+      habitat: "forest"
+      count_range: [3, 15]
+
+climate:
+  season_temps:
+    winter:
+      base: -5
+      range: [-20, 5]
+
+agent:
+  name: "Wanderer"
+  backstory: "A former soldier seeking solitude."
+  occupation: "ranger"
+```
+
+See `world_config_example.yaml` for a full example and `src/world_template.py` for all available options.
+
+### Configurable Primitives
+
+| Category | What You Can Set |
+|----------|-----------------|
+| **Geography** | Region name, climate type, water body, elevation, notable features |
+| **Culture** | Name pools, speech style, occupations, greeting style, local expressions |
+| **Ecology** | Plant types, animal types, fish species — all with habitats and seasonal patterns |
+| **Climate** | Temperature ranges, weather probabilities, daylight hours — per season |
+| **Agent** | Name, backstory, occupation, starting location, home |
+| **Rituals** | Seasonal events with custom names, timing, and locations |
+
 ## Architecture
 
 ```
